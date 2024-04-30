@@ -8,6 +8,7 @@ import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 @Model(adaptables = SlingHttpServletRequest.class,defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class TestCustomsecond {
 @ValueMapValue
+
     public  String path;
 
     public String getPath() {
