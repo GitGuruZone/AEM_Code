@@ -14,5 +14,6 @@ public class TestCustomsecond {
 
     public String getPath() {
         return path;
+
     }
 }
