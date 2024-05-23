@@ -19,7 +19,7 @@ import java.util.Map;
         immediate = true,
         property = {
                 EventConstants.EVENT_TOPIC + "=org/apache/sling/api/resource/Resource/ADDED",
-                EventConstants.EVENT_FILTER + "=(path=/content/training_projects/us/en/testing-page/*)"
+                EventConstants.EVENT_FILTER + "=(path=/content/training_projects/us/en/*)"
         }
 )
 public class JobCreator implements EventHandler {
