@@ -30,7 +30,7 @@ public class AemNotificationService {
            TaskManagerFactory taskManagerFactory = taskManager.getTaskManagerFactory();
            Task task= taskManagerFactory.newTask(Task.DEFAULT_TASK_TYPE);
            task.setName(Title);
-           task.setPriority(priority);
+           task.setPriority(InboxItem.Priority.LOW);
            task.setDescription(Description);
            task.setCurrentAssignee("admin");
            taskManager.createTask(task);
