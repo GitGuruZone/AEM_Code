@@ -24,8 +24,8 @@ public boolean sendEmail(String to,String from,String subject,String text){
     properties.put("mail.smtp.port", "587");
     properties.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
-    String userName="merifakeid5@gmail.com";
-    String password="bmqsuptlurlhhlqo";
+    String userName="@gmail.com";
+    String password="";
     Session session=Session.getInstance(properties, new Authenticator() {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {

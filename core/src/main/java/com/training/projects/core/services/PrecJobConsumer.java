@@ -1,9 +1,7 @@
-package com.training.projects.core.models;
+package com.training.projects.core.services;
 
 import com.adobe.granite.workflow.exec.InboxItem;
-import com.training.projects.core.services.AemNotificationService;
 //import com.training.projects.core.services.EmailSendService;
-import com.training.projects.core.services.EmailService;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -38,7 +36,7 @@ public class PrecJobConsumer implements  JobConsumer{
             String path = (String) job.getProperty("path");
             String event = (String) job.getProperty("event");
            aemNotificationService.sendNotification("Page Detail","Page has been created", InboxItem.Priority.HIGH);
-           emailService.sendEmail("sapnatanwar2299@gmail.com","merifakeid5@gmail.com","Delete Node","Hello,Fatima how are you");
+           emailService.sendEmail("aryankumarjha@gmail.com","merifakeid5@gmail.com","Delete Node","Hello,Aryan how are you");
 
             logger.info("everything is ok!"+path);
             return JobResult.OK;

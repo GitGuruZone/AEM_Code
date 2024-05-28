@@ -1,4 +1,4 @@
-package com.training.projects.core.models;
+package com.training.projects.core.services;
 
 import org.apache.sling.api.SlingConstants;
 import org.apache.sling.event.jobs.Job;
