@@ -8,7 +8,7 @@ public class MultifieldPOJO {
         return text;
     }
 
-    public void setText(String text) {
+    public void setText(final String text) {
         this.text = text;
     }
 
@@ -16,7 +16,7 @@ public class MultifieldPOJO {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 }

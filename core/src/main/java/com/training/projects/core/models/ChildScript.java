@@ -7,48 +7,51 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.injectorspecific.ScriptVariable;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
-import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
-@Model(adaptables = SlingHttpServletRequest.class,defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+/**
+ * this class used for ScriptVariable from Parent.
+ */
+@Model(adaptables = SlingHttpServletRequest.class,
+        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ChildScript {
-   @SlingObject
-    ResourceResolver resourceResolver;
     @SlingObject
-    SlingHttpServletRequest request;
+    private ResourceResolver resourceResolver;
+    @SlingObject
+    private SlingHttpServletRequest request;
     private static final String INHERITED_SCRIPT_PROPERTY = "datatext";
+    private String propertValue = StringUtils.EMPTY;
 
-    @ValueMapValue
-    String datatext;
-    String propertValue=StringUtils.EMPTY;
-
-
-
+    /**
+     * this method used to get script variable.
+     */
     @PostConstruct
-    public void init(){
+    public void init() {
+        Logger logger = LoggerFactory.getLogger(getClass());
         try {
-            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+            PageManager pgMgr = resourceResolver.adaptTo(PageManager.class);
             String[] paths = request.getPathInfo().split("\\.");
             String path = paths[0];
-//            pageManager.getContainingPage(request.getResource()).getProperties().get
-            Page childPage = pageManager.getPage(path);
+            Page childPage = pgMgr.getPage(path);
             Boolean flag = true;
             while (childPage.getParent() != null && flag) {
 
-                propertValue = childPage.getProperties().get(INHERITED_SCRIPT_PROPERTY, String.class);
+                propertValue = childPage.getProperties()
+                        .get(INHERITED_SCRIPT_PROPERTY, String.class);
                 if (propertValue != null) {
                     flag = false;
 
                 }
                 childPage = childPage.getParent();
             }
+            logger.info("Script Variable is :" + propertValue);
+        } catch (Exception e) {
+            logger.info("No Script variable found in any page .......");
         }
-            catch(Exception e){
-
-            }
     }
 
     public String getPropertValue() {

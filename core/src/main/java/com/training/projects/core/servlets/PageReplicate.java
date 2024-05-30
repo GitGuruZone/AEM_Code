@@ -4,9 +4,9 @@ import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.training.projects.core.commonutils.CommonUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -22,41 +22,50 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Component(service = Servlet.class,property =
+@Component(service = Servlet.class, property =
         {
                 "sling.servlet.methods=GET",
                 "sling.servlet.paths=/apps/page/replicate"
         })
 public class PageReplicate extends SlingSafeMethodsServlet {
+    private String systemUser = "customuser";
     @Reference
-    Replicator replicator;
+    private Replicator replicator;
     @Reference
-    ResourceResolverFactory resourceResolverFactory;
+    private ResourceResolverFactory resourceResolverFactory;
+
     @Override
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
-        ResourceResolver resourceResolver=null;
-        Logger logger= LoggerFactory.getLogger(getClass());
-        Map<String ,Object>map= new HashMap<>();
-        map.put(ResourceResolverFactory.SUBSERVICE,"testuser");
-        try{
-            resourceResolver=resourceresolver(map);
-        }catch(Exception e){
-            logger.error(""+e);
+    protected void doGet(final SlingHttpServletRequest request,
+                         final SlingHttpServletResponse response)
+            throws ServletException, IOException {
+        ResourceResolver resourceResolver = null;
+        Logger logger = LoggerFactory.getLogger(getClass());
+        Map<String, Object> map = new HashMap<>();
+        map.put(ResourceResolverFactory.SUBSERVICE, "testuser");
+        try {
+            resourceResolver = CommonUtils.getResolver(
+                    resourceResolverFactory, systemUser);
+        } catch (Exception e) {
+            logger.error("" + e);
         }
-        try{
-            PageManager pageManager= resourceResolver.adaptTo(PageManager.class);
-            Page newpage= pageManager.create("/content/training_projects/us/en","ReplicatePage","/conf/training_projects/settings/wcm/templates/page-content","newpage");
-            if(newpage!=null){
-                Session session=resourceResolver.adaptTo(Session.class);
-                replicator.replicate(session, ReplicationActionType.ACTIVATE,newpage.getPath());
+        try {
+            PageManager pageManager
+                    = resourceResolver.adaptTo(PageManager.class);
+            Page newpage = pageManager.create(
+                    "/content/training_projects/us/en",
+                    "ReplicatePage",
+                    "/conf/training_projects/settings/"
+                            + "wcm/templates/page-content",
+                    "newpage");
+            if (newpage != null) {
+                Session session = resourceResolver.adaptTo(Session.class);
+                replicator.replicate(session, ReplicationActionType.ACTIVATE,
+                        newpage.getPath());
                 session.save();
             }
-        }
-        catch (Exception e){
-            logger.error("replicate page =>  "+e);
+        } catch (Exception e) {
+            logger.error("replicate page =>  " + e);
         }
     }
-    public ResourceResolver resourceresolver(Map<String,Object>map) throws LoginException {
-        return resourceResolverFactory.getServiceResourceResolver(map);
-    }
+
 }

@@ -8,7 +8,7 @@ public class TestCodePOJO {
         return multitext;
     }
 
-    public void setMultitext(String multitext) {
+    public void setMultitext(final String multitext) {
         this.multitext = multitext;
     }
 
@@ -16,7 +16,7 @@ public class TestCodePOJO {
         return multipath;
     }
 
-    public void setMultipath(String multipath) {
+    public void setMultipath(final String multipath) {
         this.multipath = multipath;
     }
 }

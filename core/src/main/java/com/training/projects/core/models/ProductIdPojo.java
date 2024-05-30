@@ -1,14 +1,14 @@
 package com.training.projects.core.models;
 
 public class ProductIdPojo {
-    String title;
-    String image;
+    private String title;
+    private String image;
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
@@ -16,10 +16,9 @@ public class ProductIdPojo {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
-
 
 
 }

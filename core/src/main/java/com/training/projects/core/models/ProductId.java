@@ -6,13 +6,12 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.injectorspecific.ScriptVariable;
-import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -20,34 +19,42 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-@Model(adaptables = SlingHttpServletRequest.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+/**
+ * this model return productData.
+ */
+@Model(adaptables = SlingHttpServletRequest.class,
+        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ProductId {
-
-    @Inject
-    Page currentPage;
     @SlingObject
-    ResourceResolver resourceResolver;
-@SlingObject
-        SlingHttpServletRequest request;
-    List<ProductIdPojo> productList = new ArrayList<>();
+    private ResourceResolver resourceResolver;
+    @SlingObject
+    private SlingHttpServletRequest request;
+    private List<ProductIdPojo> productList = new ArrayList<>();
 
+    /**
+     * it gives data by using product,
+     * id from PageProperty.
+     */
     @PostConstruct
     public void init() {
+        Logger logger = LoggerFactory.getLogger(getClass());
         try {
 
-            PageManager pageManager= resourceResolver.adaptTo(PageManager.class);
-            String [] paths=request.getPathInfo().split("\\.");
-            String path=paths[0];
-//            pageManager.getContainingPage(request.getResource()).getProperties().get
-            Page page=pageManager.getPage(path);
-           String id= page.getProperties().get("productid").toString();
-            if (id!=null) {
-//                String productId = currentPage.getProperties().get("productid", String.class);
-                String apikey = "https://fakestoreapi.com/products/" + id;
+            PageManager pageManager = resourceResolver.adaptTo(
+                    PageManager.class);
+            String[] paths = request.getPathInfo().split("\\.");
+            String path = paths[0];
+            Page page = pageManager.getPage(path);
+            String id = page.getProperties().get("productid").toString();
+            if (id != null) {
+                String apikey
+                        = "https://fakestoreapi.com/products/" + id;
                 URL url = new URL(apikey);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection connection
+                        = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                BufferedReader in = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream()));
                 StringBuffer response = new StringBuffer();
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
@@ -55,17 +62,19 @@ public class ProductId {
                 }
                 in.close();
                 JSONObject jsonObj = new JSONObject(response.toString());
-                ProductIdPojo productIdPojo= new ProductIdPojo();
+                ProductIdPojo productIdPojo = new ProductIdPojo();
                 productIdPojo.setTitle(jsonObj.getString("title"));
                 productIdPojo.setImage(jsonObj.getString("image"));
 
                 productList.add(productIdPojo);
+                logger.info("our dataList is " + productList);
             } else {
                 // Handle the case where currentPage is null
+                logger.info("Provide id to get data from API");
             }
         } catch (Exception e) {
             // Handle exceptions
-            e.printStackTrace(); // For debugging, you might want to log this instead
+            logger.info("their is some error in try block correct it");
         }
     }
 
