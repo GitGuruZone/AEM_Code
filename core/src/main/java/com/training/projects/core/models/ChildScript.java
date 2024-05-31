@@ -23,8 +23,10 @@ public class ChildScript {
     private ResourceResolver resourceResolver;
     @SlingObject
     private SlingHttpServletRequest request;
+
     private static final String INHERITED_SCRIPT_PROPERTY = "datatext";
     private String propertValue = StringUtils.EMPTY;
+
 
     /**
      * this method used to get script variable.
